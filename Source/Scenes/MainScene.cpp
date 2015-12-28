@@ -146,7 +146,7 @@ void MainScene::onEnter()
 	// Create the pixel shader
  	ID3DBlob* pPSBlob = NULL;
  	hr = CompileShaderFromFile("testShader.fx", "PS", "ps_4_0", &pPSBlob);
- 	if (FAILED(hr))
+//	if (FAILED(hr))
  	
 	hr = mDirector->getApp()->getRenderer()->getRenderDevice()->CreatePixelShader(pPSBlob->GetBufferPointer(), pPSBlob->GetBufferSize(), NULL, &g_pPixelShader);
  	pPSBlob->Release();
