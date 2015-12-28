@@ -28,12 +28,15 @@
 *.app
 
 syntax: regexp  
-Bin/  
-Obj/
-ipch/  
+Project/VS12/Bin/  
+Project/VS12/Obj/
+Project/VS12/ipch/  
 
 syntax: glob  
 *.opensdf
 *.sdf
 *.suo
 *.user
+*.ilk
+*.pdb
+*.ipch
