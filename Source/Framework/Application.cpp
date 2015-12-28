@@ -10,6 +10,7 @@
 #include "Application.h"
 
 #include "Framework/Modules/ModulePlugin.h"
+#include "Framework/EventDriver/EventCenter.h"
 
 HV::Application::Application()
 	: mIsRunning(false)
@@ -64,10 +65,14 @@ void HV::Application::doFrame()
 		mRenderer->endScene();
 		mRenderer->present();
 	}
+
+	EventCenter::getInstance()->publishEvent();
 }
 
 void HV::Application::shutDown()
 {
+	EventCenter::destory();
+
 	detachModulues();
 	setRunningFlag(false);
 }

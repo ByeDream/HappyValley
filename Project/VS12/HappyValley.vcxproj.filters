@@ -61,6 +61,9 @@
     <Filter Include="Source\Framework\Math\XNAMath">
       <UniqueIdentifier>{33973e81-c78f-4d1f-9444-297f52dfd0f5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source\Framework\EventDriver">
+      <UniqueIdentifier>{05b1980d-0d48-452a-970e-2d2c5582fb29}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Source\stdafx.h">
@@ -138,6 +141,15 @@
     <ClInclude Include="..\..\Source\Framework\Math\XNAMath\xnamath.h">
       <Filter>Source\Framework\Math\XNAMath</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Source\Framework\EventDriver\Event.h">
+      <Filter>Source\Framework\EventDriver</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Framework\EventDriver\EventCenter.h">
+      <Filter>Source\Framework\EventDriver</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Framework\EventDriver\EventProcessor.h">
+      <Filter>Source\Framework\EventDriver</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Source\stdafx.cpp">
@@ -181,6 +193,12 @@
     </ClCompile>
     <ClCompile Include="..\..\Source\Framework\Modules\Rendering\Platform\D3D11\RendererD3D11.cpp">
       <Filter>Source\Framework\Modules\Rendering\Platform\D3D11</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Framework\EventDriver\EventProcessor.cpp">
+      <Filter>Source\Framework\EventDriver</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Framework\EventDriver\EventCenter.cpp">
+      <Filter>Source\Framework\EventDriver</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

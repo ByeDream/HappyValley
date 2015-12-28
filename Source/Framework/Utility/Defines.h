@@ -50,12 +50,14 @@ namespace HV
 		UINT32 right;
 		UINT32 bottom;
 	} RECT2D, *PRECT2D;
+	typedef const PRECT2D CPRECT2D;
 
 	typedef struct _POINT2D_
 	{
 		UINT32 x;
 		UINT32 y;
 	} POINT2D, *PPOINT2D;
+	typedef const PPOINT2D CPPOINT2D;
 
 #	define SAFE_DELETE(ptr) if(ptr) { delete ptr; ptr = NULL; }
 #	define SAFE_DELETE_ARRAY(ptr) if(ptr) { delete[] ptr; ptr = NULL; }
