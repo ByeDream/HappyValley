@@ -11,6 +11,7 @@
 
 namespace HV
 {
+	// return true if you want to swallow the event
 	typedef bool(*EventHandleFunc)(CPEvent e, void *pOwner);
 
 	class EventProcessor
@@ -21,9 +22,12 @@ namespace HV
 		virtual ~EventProcessor() {}
 
 		virtual void			setOwner(void * pOwner, EventHandleFunc pFunc) { mOwner = pOwner; mFunc = pFunc; }
+		// return true if you want to swallow the event
 		virtual bool			handleEvent(CPEvent e) { bool swallowEvent = false; return swallowEvent; }
 
 		virtual void			registerToEventCenter(EventType *subscriptionList, SIZE_T sizeOfList);
+		virtual void			unregisterFromEventCenter();
+
 	protected:
 		EventHandleFunc			mFunc;
 		void *					mOwner;

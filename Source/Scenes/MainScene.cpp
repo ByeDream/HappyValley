@@ -16,6 +16,9 @@
 #include "Framework/Application.h"
 #include "Framework/Modules/Timer/Timer.h"
 #include "Framework/Modules/Rendering/Renderer.h"
+#include "Framework/EventDriver/EventCenter.h"
+
+using namespace HV;
 
 // test code
 struct SimpleVertex
@@ -93,6 +96,11 @@ void MainScene::update(DECIMAL deltaTime)
 
 	// Initialize the projection matrix
 	g_Projection = XMMatrixPerspectiveFovLH(XM_PIDIV2, 1280 / (FLOAT)720, 0.01f, 100.0f);
+
+	PEvent e = EventCenter::getInstance()->createStdEvent(EVENT_SWITCH_TO_SCENE, this, SID_SubScene0, 0);
+	EventCenter::getInstance()->reportEvent(e);
+	// mDirector->switchToScene(SID_SubScene0);
+
 }
 
 void MainScene::render(HV::Renderer *renderer)
@@ -112,9 +120,6 @@ void MainScene::render(HV::Renderer *renderer)
 	// no pixel constant for this test case
 
 	renderer->getRenderContext()->DrawIndexed(36, 0, 0);        // 36 vertices needed for 12 triangles in a triangle list
-
-
-	// mDirector->switchToScene(SID_SubScene0);
 }
 
 void MainScene::onEnter()

@@ -7,11 +7,13 @@
 #ifndef __MODULE_H__
 #define __MODULE_H__
 
+#include "Framework/EventDriver/EventProcessor.h"
+
 namespace HV
 {
 	class Application;
 
-	class Module
+	class Module : public EventProcessor
 	{
 	public:
 		Module(Application *app) : mApp(app) {}

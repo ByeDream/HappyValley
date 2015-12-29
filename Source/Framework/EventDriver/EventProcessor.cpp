@@ -30,4 +30,9 @@ void HV::EventProcessor::registerToEventCenter(EventType *subscriptionList, SIZE
 	EventCenter::getInstance()->attachProcessor(this, subscriptionList, sizeOfList);
 }
 
+void HV::EventProcessor::unregisterFromEventCenter()
+{
+	EventCenter::getInstance()->detachProcessor(this);
+}
+
 

@@ -27,12 +27,18 @@ HV::Director::~Director()
 
 void HV::Director::initialize()
 {
-
+	EventType subscriptionList[] =
+	{
+		EVENT_SWITCH_TO_SCENE,
+	};
+	SIZE_T numSubscriptions = SIZE_OF_ARRAY(subscriptionList);
+	registerToEventCenter(subscriptionList, numSubscriptions);
 }
 
 void HV::Director::finitialize()
 {
 	switchToScene(-1); 
+	unregisterFromEventCenter();
 }
 
 void HV::Director::update(DECIMAL deltaTime)
@@ -74,9 +80,22 @@ void HV::Director::switchToScene(INDEX_T id)
 	}
 }
 
-void HV::Director::ShutDown()
+bool HV::Director::handleEvent(CPEvent e)
 {
-	mApp->setRunningFlag(false);
+	bool swallowEvent = false;
+	switch (e->type)
+	{
+	case EVENT_SWITCH_TO_SCENE:
+		{
+			UINT32 targetID = e->arg.ui32a[0];
+			switchToScene(targetID);
+			swallowEvent = true;
+		}
+		break;
+	default:
+		break;
+	}
+	return swallowEvent;
 }
 
 // EOF

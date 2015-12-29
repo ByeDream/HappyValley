@@ -30,10 +30,12 @@ namespace HV
 		virtual void				render(Renderer *renderer);
 
 		virtual void				switchToScene(INDEX_T id);
-		virtual void				ShutDown();
 		virtual Scene *				getCurrentActiveScene() { return mCurrentActiveScene; }
 
 		static FACTORY::Factory *	sGetSceneFactory();
+
+		virtual bool				handleEvent(CPEvent e);
+
 	protected:
 		Scene *						mCurrentActiveScene;
 	};

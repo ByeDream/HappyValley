@@ -11,10 +11,15 @@
 
 #include "ScenesHeader.h"
 #include "Framework/Modules/Director/Director.h"
+#include "Framework/EventDriver/EventCenter.h"
+
+using namespace HV;
 
 void SubScene1::update(DECIMAL deltaTime)
 {
 	int i = 0;
+	PEvent e = EventCenter::getInstance()->createStdEvent(EVENT_SHUTDOWN_APP, this);
+	EventCenter::getInstance()->reportEvent(e);
 }
 
 void SubScene1::render(HV::Renderer *renderer)

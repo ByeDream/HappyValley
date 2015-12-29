@@ -8,6 +8,8 @@
 #ifndef __APPLICATION_H__
 #define __APPLICATION_H__
 
+#include "Framework/EventDriver/EventProcessor.h"
+
 namespace HV
 {
 	class Terminal;
@@ -15,7 +17,7 @@ namespace HV
 	class Director;
 	class Timer;
 
-	class Application
+	class Application : EventProcessor
 	{
 	public:
 		Application();
@@ -24,12 +26,13 @@ namespace HV
 		virtual void			doFrame();
 		virtual void			shutDown();
 		virtual bool			isRunning() const { return mIsRunning; }
-		virtual void			setRunningFlag(bool flag) { mIsRunning = flag; }
 
 		inline Terminal *		getTerminal() const { return mTerminal; }
 		inline Renderer *		getRenderer() const { return mRenderer; }
 		inline Director *		getDirector() const { return mDirector; }
 		inline Timer *			getTimer() const { return mTimer; }
+
+		virtual bool			handleEvent(CPEvent e);
 
 	protected:
 		virtual void			attachModulues();

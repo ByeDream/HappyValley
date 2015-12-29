@@ -29,12 +29,19 @@ HV::Application::~Application()
 
 void HV::Application::boot()
 {
-	setRunningFlag(true);
+	EventType subscriptionList[] =
+	{
+		EVENT_SHUTDOWN_APP,
+	};
+	SIZE_T numSubscriptions = SIZE_OF_ARRAY(subscriptionList);
+	registerToEventCenter(subscriptionList, numSubscriptions);
+
 	attachModulues();
 
 	mTerminal->show();
 	mTimer->reset();
 	mDirector->switchToScene(0);  // Start with scene 0(main scene)
+	mIsRunning = true;
 }
 
 void HV::Application::doFrame()
@@ -71,10 +78,13 @@ void HV::Application::doFrame()
 
 void HV::Application::shutDown()
 {
+	unregisterFromEventCenter();
+
 	EventCenter::destory();
 
 	detachModulues();
-	setRunningFlag(false);
+
+	mIsRunning = false;
 }
 
 void HV::Application::attachModulues()
@@ -91,6 +101,21 @@ void HV::Application::detachModulues()
 	sDestroyFinitTimer(mTimer);
 	sDestroyFinitRenderer(mRenderer);
 	sDestroyFinitTerminal(mTerminal);
+}
+
+bool HV::Application::handleEvent(CPEvent e)
+{
+	bool swallowEvent = false;
+	switch (e->type)
+	{
+	case EVENT_SHUTDOWN_APP:
+		mIsRunning = false;
+		swallowEvent = true;
+		break;
+	default:
+		break;
+	}
+	return swallowEvent;
 }
 
 // EOF

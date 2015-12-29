@@ -17,15 +17,16 @@ namespace HV
 	{
 		friend class Singleton<EventCenter>;
 		typedef std::list<EventProcessor *> ProcessorContactThin;
-		typedef std::map<UINT32, ProcessorContactThin> SubscriptionList;
+		typedef std::map<UINT32, ProcessorContactThin *> SubscriptionList;
 		typedef std::vector<PEvent> EventPool;
 	public:
 		virtual void			initialize();
 		virtual void			finitialize();
 
+		PEvent					createStdEvent(EventType type, void *sender);
 		PEvent					createStdEvent(EventType type, void *sender, INT64 arg);
 		PEvent					createStdEvent(EventType type, void *sender, UINT64 arg);
-		PEvent					createStdEvent(EventType type, void *sender, INTPTR arg);
+		PEvent					createStdEvent(EventType type, void *sender, void *arg);
 		PEvent					createStdEvent(EventType type, void *sender, DECIMAL arg);
 		PEvent					createStdEvent(EventType type, void *sender, INT32 arg0, INT32 arg1);
 		PEvent					createStdEvent(EventType type, void *sender, UINT32 arg0, UINT32 arg1);
@@ -40,6 +41,8 @@ namespace HV
 	private:
 		EventCenter();
 		~EventCenter();
+
+		void					clearEventPool();
 
 		SubscriptionList		mSubscriptionList;
 		EventPool				mEventPool;
