@@ -64,6 +64,12 @@
     <Filter Include="Source\Framework\EventDriver">
       <UniqueIdentifier>{05b1980d-0d48-452a-970e-2d2c5582fb29}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resource">
+      <UniqueIdentifier>{4d9df1a5-0a97-4664-930a-31336f67a23b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource\Shader">
+      <UniqueIdentifier>{e54240c4-2d41-4645-8098-28904921aab3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Source\stdafx.h">
@@ -230,5 +236,10 @@
     <None Include="..\..\Source\Framework\Math\XNAMath\xnamathvector.inl">
       <Filter>Source\Framework\Math\XNAMath</Filter>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="..\..\Resource\SampleEffect.fx">
+      <Filter>Resource\Shader</Filter>
+    </CustomBuild>
   </ItemGroup>
 </Project>

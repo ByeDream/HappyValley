@@ -15,6 +15,9 @@
 
 #include <string>
 
+#include <fstream>
+#include <iostream>
+
 // Standard library
 #include <map>
 #include <vector>

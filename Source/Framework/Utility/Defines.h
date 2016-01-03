@@ -65,6 +65,8 @@ namespace HV
 
 #	define SIZE_OF_ARRAY(a) (sizeof(a)/sizeof((a)[0]))
 
+#	define OBJ_MEM_CLEAR(obj) memset(&obj, 0, sizeof(obj))
+
 	template<typename T>
 	inline T					_max(T a, T b)
 	{ 

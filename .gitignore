@@ -40,3 +40,5 @@ syntax: glob
 *.ilk
 *.pdb
 *.ipch
+*.cod
+*.fxo

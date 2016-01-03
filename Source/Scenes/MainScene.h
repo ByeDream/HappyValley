@@ -17,6 +17,11 @@ public:
 
 	virtual void				onEnter();
 	virtual void				onExit();
+
+private:
+	void						buildGeometryBuffers();
+	void						buildFX();
+	void						buildVertexInputLayout();
 };
 
 
