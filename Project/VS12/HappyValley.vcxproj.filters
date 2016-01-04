@@ -156,6 +156,39 @@
     <ClInclude Include="..\..\Source\Framework\EventDriver\EventProcessor.h">
       <Filter>Source\Framework\EventDriver</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Source\Framework\Modules\Rendering\IndexBuffer.h">
+      <Filter>Source\Framework\Modules\Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Framework\Modules\Rendering\PixelShader.h">
+      <Filter>Source\Framework\Modules\Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Framework\Modules\Rendering\RenderContext.h">
+      <Filter>Source\Framework\Modules\Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Framework\Modules\Rendering\RenderStatus.h">
+      <Filter>Source\Framework\Modules\Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Framework\Modules\Rendering\RenderTarget.h">
+      <Filter>Source\Framework\Modules\Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Framework\Modules\Rendering\Shader.h">
+      <Filter>Source\Framework\Modules\Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Framework\Modules\Rendering\SwapChain.h">
+      <Filter>Source\Framework\Modules\Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Framework\Modules\Rendering\Texture.h">
+      <Filter>Source\Framework\Modules\Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Framework\Modules\Rendering\VertexBuffer.h">
+      <Filter>Source\Framework\Modules\Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Framework\Modules\Rendering\VertexDeclaration.h">
+      <Filter>Source\Framework\Modules\Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Framework\Modules\Rendering\VertexShader.h">
+      <Filter>Source\Framework\Modules\Rendering</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Source\stdafx.cpp">

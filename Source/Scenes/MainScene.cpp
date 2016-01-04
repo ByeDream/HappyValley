@@ -41,7 +41,11 @@ XMMATRIX                g_Projection;
 
 void MainScene::update(DECIMAL deltaTime)
 {
+	
+
 	DECIMAL time = mDirector->getApp()->getTimer()->getSuspendableTotalTimeInSecond();
+
+	mWireframeMode = ((UINT32)time % 6) < 3;
 
 	g_World = XMMatrixRotationY(time);
 
@@ -73,12 +77,11 @@ void MainScene::render(HV::Renderer *renderer)
 		renderConext->IASetIndexBuffer(g_pIndexBuffer, DXGI_FORMAT_R16_UINT, 0);
 
 		// update constant buffers
-		ID3DX11EffectMatrixVariable *constantWVP = g_effect->GetConstantBufferByName("gWorldViewProj")->AsMatrix();
+		ID3DX11EffectMatrixVariable *constantWVP = g_effect->GetVariableByName("gWorldViewProj")->AsMatrix();
 		XMMATRIX WVP = g_World * g_View * g_Projection;
 		constantWVP->SetMatrix(reinterpret_cast<float*>(&WVP));
 
-		ID3DX11EffectTechnique *tech = g_effect->GetTechniqueByName("SolidTech");
-		//ID3DX11EffectTechnique *tech = g_effect->GetTechniqueByName("WireframeTech");
+		ID3DX11EffectTechnique *tech = mWireframeMode ? g_effect->GetTechniqueByName("WireframeTech") : g_effect->GetTechniqueByName("SolidTech");
 		D3DX11_TECHNIQUE_DESC techDesc;
 		tech->GetDesc(&techDesc);
 		for (INDEX_T i = 0; i < techDesc.Passes; i++)

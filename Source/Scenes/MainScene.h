@@ -12,6 +12,9 @@
 class MainScene : public HV::Scene
 {
 public:
+	MainScene() : mWireframeMode(false) {}
+	virtual ~MainScene() {}
+
 	virtual void				update(DECIMAL deltaTime);
 	virtual void				render(HV::Renderer *renderer);
 
@@ -22,6 +25,8 @@ private:
 	void						buildGeometryBuffers();
 	void						buildFX();
 	void						buildVertexInputLayout();
+
+	bool						mWireframeMode;
 };
 
 

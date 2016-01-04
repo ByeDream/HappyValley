@@ -21,8 +21,7 @@ struct VS_OUTPUT
 RasterizerState WireframeRS
 {
 	FillMode = Wireframe;
-	CullMode = Back;
-	FrontCounterClockwise = false;
+	CullMode = None;
 };
 
 RasterizerState SolidRS
@@ -46,12 +45,11 @@ VS_OUTPUT VS(VS_INPUT input)
 //--------------------------------------------------------------------------------------
 // Pixel Shader
 //--------------------------------------------------------------------------------------
-float4 PS(	VS_OUTPUT input, 
-			uniform bool useColor ) : SV_Target
+float4 PS(VS_OUTPUT input, uniform bool useColor) : SV_Target
 {
-	float4 defaultColor = float4(1, 1, 1, 1);
+	float4 defaultColor = float4(0.0, 1.0, 0.0, 1.0);
 	float4 color = useColor * (input.Color - defaultColor) + defaultColor;
-   return input.Color;
+	return color;
 }
 
 //--------------------------------------------------------------------------------------
