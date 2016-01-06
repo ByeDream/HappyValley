@@ -126,6 +126,7 @@
     <ClInclude Include="..\..\Source\Framework\Scene.h" />
     <ClInclude Include="..\..\Source\Framework\Utility\Defines.h" />
     <ClInclude Include="..\..\Source\Framework\Utility\Exceptions.h" />
+    <ClInclude Include="..\..\Source\Framework\Utility\GeometryGenerator.h" />
     <ClInclude Include="..\..\Source\Framework\Utility\Utility.h" />
     <ClInclude Include="..\..\Source\Scenes\MainScene.h" />
     <ClInclude Include="..\..\Source\Scenes\ScenesHeader.h" />
@@ -146,6 +147,7 @@
     <ClCompile Include="..\..\Source\Framework\Modules\Timer\Platform\Windows\TimerWin.cpp" />
     <ClCompile Include="..\..\Source\Framework\Modules\Timer\Timer.cpp" />
     <ClCompile Include="..\..\Source\Framework\Scene.cpp" />
+    <ClCompile Include="..\..\Source\Framework\Utility\GeometryGenerator.cpp" />
     <ClCompile Include="..\..\Source\Scenes\MainScene.cpp" />
     <ClCompile Include="..\..\Source\Scenes\SubScene1.cpp" />
     <ClCompile Include="..\..\Source\stdafx.cpp">

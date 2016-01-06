@@ -9,6 +9,7 @@
 
 #include "Framework/Utility/Defines.h"
 #include "Framework/Utility/Exceptions.h"
+#include "Framework/Utility/GeometryGenerator.h"
 
 #endif // !__UTILITY_H__
 

@@ -30,7 +30,7 @@ namespace HV
 #		define INTPTR			UINT64
 #	endif
 
-#	define USE_DOUBLE_DECIMAL
+//#	define USE_DOUBLE_DECIMAL
 #	ifdef USE_DOUBLE_DECIMAL
 #		define DECIMAL			double
 #	else
@@ -77,6 +77,20 @@ namespace HV
 	inline T					_min(T a, T b) 
 	{ 
 		return a < b ? a : b; 
+	}
+
+	inline DECIMAL _angleFromXY(DECIMAL x, DECIMAL y)
+	{
+		DECIMAL theta = 0.0f;
+		if (x >= 0.0f)
+		{
+			theta = (DECIMAL)atan(y / x);
+			if (theta < 0.0f)
+				theta += 6.283185307f;
+		}
+		else
+			theta = (DECIMAL)atan(y / x) + 3.141592654f;
+		return theta;
 	}
 
 	inline const char *			_analyzeFileName(const char *filePath)

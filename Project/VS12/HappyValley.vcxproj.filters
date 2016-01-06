@@ -70,6 +70,9 @@
     <Filter Include="Resource\Shader">
       <UniqueIdentifier>{e54240c4-2d41-4645-8098-28904921aab3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source\Framework\Objects">
+      <UniqueIdentifier>{90fde219-4e6b-4d50-b77a-f12001a8f771}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Source\stdafx.h">
@@ -189,6 +192,9 @@
     <ClInclude Include="..\..\Source\Framework\Modules\Rendering\VertexShader.h">
       <Filter>Source\Framework\Modules\Rendering</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Source\Framework\Utility\GeometryGenerator.h">
+      <Filter>Source\Framework\Utility</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Source\stdafx.cpp">
@@ -238,6 +244,9 @@
     </ClCompile>
     <ClCompile Include="..\..\Source\Framework\EventDriver\EventCenter.cpp">
       <Filter>Source\Framework\EventDriver</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Framework\Utility\GeometryGenerator.cpp">
+      <Filter>Source\Framework\Utility</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

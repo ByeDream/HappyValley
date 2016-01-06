@@ -32,7 +32,9 @@ struct SimpleVertex
 
 ID3D11InputLayout*      g_pVertexLayout = NULL;
 ID3D11Buffer*           g_pVertexBuffer = NULL;
+SIZE_T					g_numVertices = 0;
 ID3D11Buffer*           g_pIndexBuffer = NULL;
+SIZE_T					g_numIndices = 0;
 ID3DX11Effect *			g_effect;
 
 XMMATRIX                g_World;
@@ -50,13 +52,13 @@ void MainScene::update(DECIMAL deltaTime)
 	g_World = XMMatrixRotationY(time);
 
 	// Initialize the view matrix
-	XMVECTOR Eye = XMVectorSet(0.0f, 0.0f, 5.0f, 0.0f);
+	XMVECTOR Eye = XMVectorSet(0.0f, 1.0f, 10.0f, 0.0f);
 	XMVECTOR At = XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
 	XMVECTOR Up = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
 	g_View = XMMatrixLookAtLH(Eye, At, Up);
 
 	// Initialize the projection matrix
-	g_Projection = XMMatrixPerspectiveFovLH(XM_PIDIV2, 1280 / (FLOAT)720, 0.01f, 100.0f);
+	g_Projection = XMMatrixPerspectiveFovLH(XM_PIDIV4, 1280 / (FLOAT)720, 0.01f, 100.0f);
 
 // 	PEvent e = EventCenter::getInstance()->createStdEvent(EVENT_SWITCH_TO_SCENE, this, SID_SubScene0, 0);
 // 	EventCenter::getInstance()->reportEvent(e);
@@ -87,7 +89,7 @@ void MainScene::render(HV::Renderer *renderer)
 		for (INDEX_T i = 0; i < techDesc.Passes; i++)
 		{
 			tech->GetPassByIndex(i)->Apply(0, renderConext);
-			renderConext->DrawIndexed(36, 0, 0); // 36 vertices needed for 12 triangles in a triangle list
+			renderConext->DrawIndexed(g_numIndices, 0, 0); // 36 vertices needed for 12 triangles in a triangle list
 		}
 	}
 }
@@ -113,30 +115,33 @@ void MainScene::onExit()
 
 void MainScene::buildGeometryBuffers()
 {
-	// Create the vertex buffer
-	SimpleVertex vertices[] =
+	GeometryGenerator::MeshData meshData;
+	GeometryGenerator::createGrid(6, 6, 6, 6, meshData);
+	g_numVertices = meshData.Vertices.size();
+	std::vector<SimpleVertex> vertices(g_numVertices);
+	for (SIZE_T i = 0; i < g_numVertices; i++)
 	{
-		{ XMFLOAT3(-1.0f, 1.0f, -1.0f), XMFLOAT4(0.0f, 0.0f, 1.0f, 1.0f) },
-		{ XMFLOAT3(1.0f, 1.0f, -1.0f), XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f) },
-		{ XMFLOAT3(1.0f, 1.0f, 1.0f), XMFLOAT4(0.0f, 1.0f, 1.0f, 1.0f) },
-		{ XMFLOAT3(-1.0f, 1.0f, 1.0f), XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f) },
-		{ XMFLOAT3(-1.0f, -1.0f, -1.0f), XMFLOAT4(1.0f, 0.0f, 1.0f, 1.0f) },
-		{ XMFLOAT3(1.0f, -1.0f, -1.0f), XMFLOAT4(1.0f, 1.0f, 0.0f, 1.0f) },
-		{ XMFLOAT3(1.0f, -1.0f, 1.0f), XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f) },
-		{ XMFLOAT3(-1.0f, -1.0f, 1.0f), XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f) },
-	};
-	SIZE_T numVertices = SIZE_OF_ARRAY(vertices);
+		vertices[i].Pos = (meshData.Vertices)[i].Position;
+		vertices[i].Color = XMFLOAT4(1.0f, 1.0f, 0.0f, 1.0f);
+	}
+	g_numIndices = meshData.Indices.size();
+	std::vector<UINT16> indices(g_numIndices);
+	for (SIZE_T i = 0; i < g_numIndices; i++)
+	{
+		indices[i] = (meshData.Indices)[i];
+	}
 
+	// Create the vertex buffer
 	D3D11_BUFFER_DESC bd;
 	OBJ_MEM_CLEAR(bd);
 	bd.Usage = D3D11_USAGE_IMMUTABLE; // D3D11_USAGE_DEFAULT;
-	bd.ByteWidth = sizeof(SimpleVertex) * numVertices;
+	bd.ByteWidth = sizeof(SimpleVertex) * g_numVertices;
 	bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 	bd.CPUAccessFlags = 0;
 
 	D3D11_SUBRESOURCE_DATA InitData;
 	OBJ_MEM_CLEAR(InitData);
-	InitData.pSysMem = vertices;
+	InitData.pSysMem = &vertices[0];
 
 	HRESULT hr = mDirector->getApp()->getRenderer()->getRenderDevice()->CreateBuffer(&bd, &InitData, &g_pVertexBuffer);
 	if (FAILED(hr))
@@ -145,34 +150,12 @@ void MainScene::buildGeometryBuffers()
 	}
 
 	// Create the index buffer
- 	UINT16 indices[] =
-	{
-		3, 1, 0,
-		2, 1, 3,
-
-		0, 5, 4,
-		1, 5, 0,
-
-		3, 4, 7,
-		0, 4, 3,
-
-		1, 6, 5,
-		2, 6, 1,
-
-		2, 7, 6,
-		3, 7, 2,
-
-		6, 4, 5,
-		7, 4, 6,
-	};
-	SIZE_T numIndices = SIZE_OF_ARRAY(indices);
-
 	bd.Usage = D3D11_USAGE_IMMUTABLE;
-	bd.ByteWidth = sizeof(UINT16) * numIndices;
+	bd.ByteWidth = sizeof(UINT16) * g_numIndices;
 	bd.BindFlags = D3D11_BIND_INDEX_BUFFER;
 	bd.CPUAccessFlags = 0;
 
-	InitData.pSysMem = indices;
+	InitData.pSysMem = &indices[0];
 
 	hr = mDirector->getApp()->getRenderer()->getRenderDevice()->CreateBuffer(&bd, &InitData, &g_pIndexBuffer);
 	if (FAILED(hr))
@@ -258,7 +241,7 @@ void MainScene::buildVertexInputLayout()
 		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 		{ "COLOR", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 	};
-	UINT numElements = ARRAYSIZE(layout);
+	SIZE_T numElements = SIZE_OF_ARRAY(layout);
 
 	D3DX11_PASS_DESC passDesc;
 	HRESULT hr = g_effect->GetTechniqueByName("SolidTech")->GetPassByIndex(0)->GetDesc(&passDesc);
