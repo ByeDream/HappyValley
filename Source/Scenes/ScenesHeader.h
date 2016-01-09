@@ -9,8 +9,8 @@
 
 enum SceneIndex
 {
-	SID_MainScene = 0,
-	SID_SubScene0,
+	//SID_MainScene = 0,
+	SID_SubScene0 = 0,
 
 	SID_Count
 };

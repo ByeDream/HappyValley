@@ -35,10 +35,12 @@ namespace HV
 		};
 
 		// defines the mesh data class for internal usage
+		typedef std::vector<Vertex> VertexList;
+		typedef std::vector<UINT16> IndexList;
 		struct MeshData
 		{
-			std::vector<Vertex> Vertices;
-			std::vector<UINT16> Indices;
+			VertexList Vertices;
+			IndexList Indices;
 		};
 
 		static void createBox(DECIMAL width, DECIMAL height, DECIMAL depth, MeshData& meshData);

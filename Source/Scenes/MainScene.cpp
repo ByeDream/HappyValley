@@ -24,22 +24,24 @@
 using namespace HV;
 
 // test code
-struct SimpleVertex
-{
-	XMFLOAT3 Pos;
-	XMFLOAT4 Color;
-};
+namespace {
+	struct SimpleVertex
+	{
+		XMFLOAT3 Pos;
+		XMFLOAT4 Color;
+	};
 
-ID3D11InputLayout*      g_pVertexLayout = NULL;
-ID3D11Buffer*           g_pVertexBuffer = NULL;
-SIZE_T					g_numVertices = 0;
-ID3D11Buffer*           g_pIndexBuffer = NULL;
-SIZE_T					g_numIndices = 0;
-ID3DX11Effect *			g_effect;
+	ID3D11InputLayout*      g_pVertexLayout = NULL;
+	ID3D11Buffer*           g_pVertexBuffer = NULL;
+	SIZE_T					g_numVertices = 0;
+	ID3D11Buffer*           g_pIndexBuffer = NULL;
+	SIZE_T					g_numIndices = 0;
+	ID3DX11Effect *			g_effect;
 
-XMMATRIX                g_World;
-XMMATRIX                g_View;
-XMMATRIX                g_Projection;
+	XMMATRIX                g_World;
+	XMMATRIX                g_View;
+	XMMATRIX                g_Projection;
+}
 
 void MainScene::update(DECIMAL deltaTime)
 {
@@ -49,16 +51,17 @@ void MainScene::update(DECIMAL deltaTime)
 
 	mWireframeMode = ((UINT32)time % 6) < 3;
 
-	g_World = XMMatrixRotationY(time);
+	g_World = XMMatrixRotationY(time * 0.01f);
+	//g_World = XMMatrixIdentity();
 
 	// Initialize the view matrix
-	XMVECTOR Eye = XMVectorSet(0.0f, 1.0f, 10.0f, 0.0f);
+	XMVECTOR Eye = XMVectorSet(0.0f, 1.0f, 150.0f, 0.0f);
 	XMVECTOR At = XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
 	XMVECTOR Up = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
 	g_View = XMMatrixLookAtLH(Eye, At, Up);
 
 	// Initialize the projection matrix
-	g_Projection = XMMatrixPerspectiveFovLH(XM_PIDIV4, 1280 / (FLOAT)720, 0.01f, 100.0f);
+	g_Projection = XMMatrixPerspectiveFovLH(XM_PIDIV4, 1280 / (FLOAT)720, 0.01f, 10000.0f);
 
 // 	PEvent e = EventCenter::getInstance()->createStdEvent(EVENT_SWITCH_TO_SCENE, this, SID_SubScene0, 0);
 // 	EventCenter::getInstance()->reportEvent(e);
@@ -116,13 +119,34 @@ void MainScene::onExit()
 void MainScene::buildGeometryBuffers()
 {
 	GeometryGenerator::MeshData meshData;
-	GeometryGenerator::createGrid(6, 6, 6, 6, meshData);
+	GeometryGenerator::createGrid(300, 300, 60, 60, meshData);
 	g_numVertices = meshData.Vertices.size();
 	std::vector<SimpleVertex> vertices(g_numVertices);
 	for (SIZE_T i = 0; i < g_numVertices; i++)
 	{
 		vertices[i].Pos = (meshData.Vertices)[i].Position;
-		vertices[i].Color = XMFLOAT4(1.0f, 1.0f, 0.0f, 1.0f);
+		vertices[i].Pos.y = 0.3f*(vertices[i].Pos.z*sinf(0.1f*vertices[i].Pos.x) + vertices[i].Pos.x*cosf(0.1f*vertices[i].Pos.z));
+		if (vertices[i].Pos.y < -10.0f)
+		{
+			vertices[i].Color = XMFLOAT4(1.0f, 0.96f, 0.62f, 1.0f);
+		}
+		else if (vertices[i].Pos.y < 5.0f)
+		{
+			vertices[i].Color = XMFLOAT4(0.48f, 0.77f, 0.46f, 1.0f);
+		}
+		else if (vertices[i].Pos.y < 12.0f)
+		{
+			vertices[i].Color = XMFLOAT4(0.1f, 0.48f, 0.19f, 1.0f);
+		}
+		else if (vertices[i].Pos.y < 20.0f)
+		{
+			vertices[i].Color = XMFLOAT4(0.45f, 0.39f, 0.34f, 1.0f);
+		}
+		else
+		{
+			vertices[i].Color = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+		}
+		//vertices[i].Color = XMFLOAT4(1.0f, 1.0f, 0.0f, 1.0f);
 	}
 	g_numIndices = meshData.Indices.size();
 	std::vector<UINT16> indices(g_numIndices);
@@ -262,5 +286,5 @@ void MainScene::buildVertexInputLayout()
 	}
 }
 
-HV::FACTORY::REGISTER_AUTO_WORKER(MainScene, SID_MainScene, HV::Director::sGetSceneFactory())
+//HV::FACTORY::REGISTER_AUTO_WORKER(MainScene, SID_MainScene, HV::Director::sGetSceneFactory())
 // EOF

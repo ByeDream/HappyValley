@@ -148,7 +148,9 @@
     <ClCompile Include="..\..\Source\Framework\Modules\Timer\Timer.cpp" />
     <ClCompile Include="..\..\Source\Framework\Scene.cpp" />
     <ClCompile Include="..\..\Source\Framework\Utility\GeometryGenerator.cpp" />
-    <ClCompile Include="..\..\Source\Scenes\MainScene.cpp" />
+    <ClCompile Include="..\..\Source\Scenes\MainScene.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\Source\Scenes\SubScene1.cpp" />
     <ClCompile Include="..\..\Source\stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
