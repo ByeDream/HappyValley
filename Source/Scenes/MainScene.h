@@ -27,6 +27,8 @@ private:
 	void						buildVertexInputLayout();
 
 	bool						mWireframeMode;
+
+	void						updateDynamicVertex(void *v, DECIMAL t);
 };
 
 

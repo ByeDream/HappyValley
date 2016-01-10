@@ -45,14 +45,11 @@ namespace {
 
 void MainScene::update(DECIMAL deltaTime)
 {
-	
-
 	DECIMAL time = mDirector->getApp()->getTimer()->getSuspendableTotalTimeInSecond();
 
 	mWireframeMode = ((UINT32)time % 6) < 3;
 
 	g_World = XMMatrixRotationY(time * 0.01f);
-	//g_World = XMMatrixIdentity();
 
 	// Initialize the view matrix
 	XMVECTOR Eye = XMVectorSet(0.0f, 1.0f, 150.0f, 0.0f);
@@ -63,6 +60,29 @@ void MainScene::update(DECIMAL deltaTime)
 	// Initialize the projection matrix
 	g_Projection = XMMatrixPerspectiveFovLH(XM_PIDIV4, 1280 / (FLOAT)720, 0.01f, 10000.0f);
 
+	// update dynamic vertex;
+	D3D11_MAPPED_SUBRESOURCE mappedData;
+	HRESULT hr = mDirector->getApp()->getRenderer()->getRenderContext()->Map(
+		g_pVertexBuffer,
+		0,
+		D3D11_MAP_WRITE_DISCARD,
+		0,
+		&mappedData
+		);
+	if (FAILED(hr))
+	{
+		THROW_EXCEPTION(SimpleException, "failed to map buffer");
+	}
+	for (INDEX_T i = 0; i < g_numVertices; i++)
+	{
+		SimpleVertex *vertices = reinterpret_cast<SimpleVertex*>(mappedData.pData);
+		updateDynamicVertex(&vertices[i], time);
+	}
+	mDirector->getApp()->getRenderer()->getRenderContext()->Unmap(
+		g_pVertexBuffer,
+		0
+		);
+
 // 	PEvent e = EventCenter::getInstance()->createStdEvent(EVENT_SWITCH_TO_SCENE, this, SID_SubScene0, 0);
 // 	EventCenter::getInstance()->reportEvent(e);
 //	mDirector->switchToScene(SID_SubScene0);
@@ -72,17 +92,10 @@ void MainScene::update(DECIMAL deltaTime)
 void MainScene::render(HV::Renderer *renderer)
 {
 	ID3D11DeviceContext *renderConext = renderer->getRenderContext();
+	ID3DX11EffectMatrixVariable *constantWVP = g_effect->GetVariableByName("gWorldViewProj")->AsMatrix();
 	// for one object
 	{
-		renderConext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-		renderConext->IASetInputLayout(g_pVertexLayout);
-		UINT stride = sizeof(SimpleVertex);
-		UINT offset = 0;
-		renderConext->IASetVertexBuffers(0, 1, &g_pVertexBuffer, &stride, &offset);
-		renderConext->IASetIndexBuffer(g_pIndexBuffer, DXGI_FORMAT_R16_UINT, 0);
-
 		// update constant buffers
-		ID3DX11EffectMatrixVariable *constantWVP = g_effect->GetVariableByName("gWorldViewProj")->AsMatrix();
 		XMMATRIX WVP = g_World * g_View * g_Projection;
 		constantWVP->SetMatrix(reinterpret_cast<float*>(&WVP));
 
@@ -106,6 +119,14 @@ void MainScene::onEnter()
 	buildGeometryBuffers();
 	buildFX();
 	buildVertexInputLayout();
+
+	ID3D11DeviceContext *renderConext = mDirector->getApp()->getRenderer()->getRenderContext();
+	renderConext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	renderConext->IASetInputLayout(g_pVertexLayout);
+	UINT stride = sizeof(SimpleVertex);
+	UINT offset = 0;
+	renderConext->IASetVertexBuffers(0, 1, &g_pVertexBuffer, &stride, &offset);
+	renderConext->IASetIndexBuffer(g_pIndexBuffer, DXGI_FORMAT_R16_UINT, 0);
 }
 
 void MainScene::onExit()
@@ -125,28 +146,7 @@ void MainScene::buildGeometryBuffers()
 	for (SIZE_T i = 0; i < g_numVertices; i++)
 	{
 		vertices[i].Pos = (meshData.Vertices)[i].Position;
-		vertices[i].Pos.y = 0.3f*(vertices[i].Pos.z*sinf(0.1f*vertices[i].Pos.x) + vertices[i].Pos.x*cosf(0.1f*vertices[i].Pos.z));
-		if (vertices[i].Pos.y < -10.0f)
-		{
-			vertices[i].Color = XMFLOAT4(1.0f, 0.96f, 0.62f, 1.0f);
-		}
-		else if (vertices[i].Pos.y < 5.0f)
-		{
-			vertices[i].Color = XMFLOAT4(0.48f, 0.77f, 0.46f, 1.0f);
-		}
-		else if (vertices[i].Pos.y < 12.0f)
-		{
-			vertices[i].Color = XMFLOAT4(0.1f, 0.48f, 0.19f, 1.0f);
-		}
-		else if (vertices[i].Pos.y < 20.0f)
-		{
-			vertices[i].Color = XMFLOAT4(0.45f, 0.39f, 0.34f, 1.0f);
-		}
-		else
-		{
-			vertices[i].Color = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-		}
-		//vertices[i].Color = XMFLOAT4(1.0f, 1.0f, 0.0f, 1.0f);
+		updateDynamicVertex(&vertices[i], 0);
 	}
 	g_numIndices = meshData.Indices.size();
 	std::vector<UINT16> indices(g_numIndices);
@@ -158,10 +158,10 @@ void MainScene::buildGeometryBuffers()
 	// Create the vertex buffer
 	D3D11_BUFFER_DESC bd;
 	OBJ_MEM_CLEAR(bd);
-	bd.Usage = D3D11_USAGE_IMMUTABLE; // D3D11_USAGE_DEFAULT;
+	bd.Usage = D3D11_USAGE_DYNAMIC;
 	bd.ByteWidth = sizeof(SimpleVertex) * g_numVertices;
 	bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-	bd.CPUAccessFlags = 0;
+	bd.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 
 	D3D11_SUBRESOURCE_DATA InitData;
 	OBJ_MEM_CLEAR(InitData);
@@ -286,5 +286,31 @@ void MainScene::buildVertexInputLayout()
 	}
 }
 
-//HV::FACTORY::REGISTER_AUTO_WORKER(MainScene, SID_MainScene, HV::Director::sGetSceneFactory())
+void MainScene::updateDynamicVertex(void *v, DECIMAL t)
+{
+	SimpleVertex *vertex = reinterpret_cast<SimpleVertex*>(v);
+	vertex->Pos.y = 0.3f * (vertex->Pos.z * sinf(0.1f * vertex->Pos.x) * sinf(t) + vertex->Pos.x * cosf(0.1f * vertex->Pos.z + t)) * cosf(t);
+	if (vertex->Pos.y < -10.0f)
+	{
+		vertex->Color = XMFLOAT4(0.4f, 0.2f, 0.2f, 1.0f);
+	}
+	else if (vertex->Pos.y < 5.0f)
+	{
+		vertex->Color = XMFLOAT4(0.6f, 0.4f, 0.4f, 1.0f);
+	}
+	else if (vertex->Pos.y < 12.0f)
+	{
+		vertex->Color = XMFLOAT4(0.8f, 0.6f, 0.6f, 1.0f);
+	}
+	else if (vertex->Pos.y < 20.0f)
+	{
+		vertex->Color = XMFLOAT4(1.0f, 0.8f, 0.8f, 1.0f);
+	}
+	else
+	{
+		vertex->Color = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+	}
+}
+
+HV::FACTORY::REGISTER_AUTO_WORKER(MainScene, SID_MainScene, HV::Director::sGetSceneFactory())
 // EOF
